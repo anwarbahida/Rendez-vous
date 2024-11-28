@@ -10,7 +10,6 @@ export class InfirmierDeBureauController {
     constructor(private readonly infirmierService: InfirmierDeBureauService) {}
 
     // Mise à jour d'un infirmier
-    // Route PATCH pour la mise à jour
     @Patch(':id')
     @UsePipes(ValidationPipe) // Applique le pipe de validation
     async update(@Param('id') id: number, @Body() updateInfirmierDto: UpdateInfirmierDto) {
