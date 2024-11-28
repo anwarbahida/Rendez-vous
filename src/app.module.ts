@@ -8,7 +8,7 @@ import { HttpExceptionFilter } from './common/filtres/http-exception.filter'; //
 import { ValidationExceptionFilter } from './common/filtres/validation-exception.filter';
 
 @Module({
-  imports: [PatientsModule, MedecinModule],  
+  imports: [MedecinModule],  
   providers: [
     {
       provide: APP_PIPE,
