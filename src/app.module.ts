@@ -1,29 +1,33 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { PatientsModule } from './patien/patien.module';
-import { InfirmierDeBureauModule } from './infirmier-de-bureau/infirmier-de-bureau.module';
-import { InfirmierDeBureau } from './infirmier-de-bureau/infirmier-de-bureau.entity';
 
+import { Module ,MiddlewareConsumer, ValidationPipe} from '@nestjs/common';
+import { PatientsModule } from './patients/patients.module';
+import { MedecinModule } from './medecin/medecin.module';
+import { LoggingMiddleware } from './patients/middleware/logging.middleware';
+import { CorsMiddleware } from './patients/middleware/cors.middleware'; 
+import { APP_FILTER ,APP_PIPE } from '@nestjs/core';
+import { HttpExceptionFilter } from './common/filtres/http-exception.filter'; // Import du middleware
+import { ValidationExceptionFilter } from './common/filtres/validation-exception.filter';
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forRoot({
-    type: 'mysql', // ou 'mysql', 'sqlite', selon votre base de données
-    host: 'localhost',
-    port: 3306, // ou selon votre configuration
-    username: 'root',
-    password: '',
-    database: 'Rendez_vous',
-    entities: [InfirmierDeBureau],
-    synchronize: false, // Mettre à false pour ne pas créer de tables automatiquement
-    logging: true,
-  }),
-    
-    
-    PatientsModule,InfirmierDeBureauModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [MedecinModule],  
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe, // Appliquer la validation globalement
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter, // Filtrer les exceptions HTTP
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter, // Filtrer les erreurs de validation
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
