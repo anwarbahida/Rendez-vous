@@ -3,10 +3,11 @@ import { InfirmierDeBureauService } from './infirmier-de-bureau.service';
 import { InfirmierDeBureauController } from './infirmier-de-bureau.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InfirmierDeBureau } from './infirmier-de-bureau.entity';
-import { InfirmierDeBureauMiddleware } from './infirmier-de-bureau.middleware'; // Importez le middleware
+import { InfirmierDeBureauMiddleware } from './infirmier-de-bureau.middleware'; 
+import { databaseConfig } from '../config/database.config';// Importez le middleware
 
 @Module({
-  imports: [TypeOrmModule.forFeature([InfirmierDeBureau])],
+  imports: [TypeOrmModule.forRoot(databaseConfig),TypeOrmModule.forFeature([InfirmierDeBureau])],
   controllers: [InfirmierDeBureauController],
   providers: [InfirmierDeBureauService],
 })

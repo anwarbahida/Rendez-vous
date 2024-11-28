@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Patient } from './patient.entity';
 import { PatientsService } from './patients.service';
 import { PatientsController } from './patients.controller';
-import { databaseConfig } from './config/database.config';
+import { databaseConfig } from '../config/database.config';
 
 @Module({
   imports: [TypeOrmModule.forRoot(databaseConfig), TypeOrmModule.forFeature([Patient])],
