@@ -20,6 +20,6 @@ export class RendezVous {
     @ManyToOne(() => medecin, (medecin) => medecin.rendezVous, { eager: true })
     medecin: medecin;
 
-    @Column({ default: 'en attente' })
-    statut: string; // Exemple : en attente, confirmé, annulé
+    @Column()
+    statut: string; // en attente, confirmé, annulé
 }

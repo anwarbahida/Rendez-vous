@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post,Get, Body, Put, Param, UsePipes, ValidationPipe,Delete } from '@nestjs/common';
 import { RendezVousService } from './rendez_vous.service';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
@@ -20,5 +20,22 @@ export class RendezVousController {
     @Body() updateRendezVousDto: UpdateRendezVousDto,
   ) {
     return this.rendezVousService.update(id, updateRendezVousDto);
+  }
+  
+   // Méthode GET pour récupérer tous les rendez-vous
+   @Get()
+   async findAll() {
+     return this.rendezVousService.findAll();
+   }
+ 
+   // Méthode GET pour récupérer un rendez-vous par ID
+   @Get(':id')
+   async findOne(@Param('id') id: string) {
+     return this.rendezVousService.findOne(id);
+   }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+     return this.rendezVousService.delete(id);
   }
 }

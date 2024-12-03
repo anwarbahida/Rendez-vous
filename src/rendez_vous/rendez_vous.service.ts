@@ -23,11 +23,11 @@ export class RendezVousService {
   }
 
   async findOne(id: string): Promise<RendezVous> {
-    const RendezVous = await this.RendezVousRepository.findOne({ where: { id } });
-    if (!RendezVous) {
-      throw new NotFoundException('RendezVous with ID ${id} not found');
+    const rendezVous = await this.RendezVousRepository.findOne({where : {id}});
+    if (!rendezVous) {
+      throw new NotFoundException(`Rendez-vous with id ${id} not found`);
     }
-    return RendezVous;
+    return rendezVous;
   }
 
   async update(id: string, updateRendezVousDto: UpdateRendezVousDto): Promise<RendezVous> {
@@ -36,8 +36,11 @@ export class RendezVousService {
     return await this.RendezVousRepository.save(RendezVous);
   }
 
-  async remove(id: string): Promise<void> {
-    const RendezVous = await this.findOne(id);
-    await this.RendezVousRepository.remove(RendezVous);
+  async delete(id: string): Promise<string> {
+    const result = await this.RendezVousRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Rendez-vous not found');
+    }
+    return `Rendez-vous with ID ${id} has been deleted successfully.`;
   }
 }

@@ -25,6 +25,6 @@ export class medecin {
   @Column()
   password:String
 
-  @OneToMany(() => RendezVous, (rendezVous) => rendezVous.patient)
+  @OneToMany(() => RendezVous, (rendezVous) => rendezVous.medecin)
   rendezVous: RendezVous[];
 }

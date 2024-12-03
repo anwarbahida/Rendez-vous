@@ -14,7 +14,7 @@ import { MedecinModule } from '../medecin/medecin.module';  // Assurez-vous que 
     MedecinModule,  // Importez PatientModule
 
   ],
-  providers: [RendezVousService],
   controllers: [RendezVousController],
+  providers: [RendezVousService],
 })
 export class RendezVousModule {}

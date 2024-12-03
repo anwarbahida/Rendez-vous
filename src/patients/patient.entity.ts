@@ -23,12 +23,12 @@ export class Patient {
   email: string;
 
   @Column()
-  @IsNumber()
+  @IsString()
   phone: string;
 
   @Column({ type: 'date' })
-  @IsDate()
-  birthDate: string;
+  @IsString()
+  birthDate: Date;
 
   @OneToMany(() => RendezVous, (rendezVous) => rendezVous.patient)
   rendezVous: RendezVous[];

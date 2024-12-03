@@ -8,5 +8,5 @@ export const databaseConfig: TypeOrmModuleOptions = {
   password: '',  
   database: 'Rendez_vous_db', 
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  synchronize: true,  
+  synchronize: false,  
 };
