@@ -8,6 +8,6 @@ import { databaseConfig } from '../config/database.config';
 @Module({
   imports: [TypeOrmModule.forRoot(databaseConfig), TypeOrmModule.forFeature([medecin])],
   controllers: [MedecinController],
-  providers: [MedecinService]
+  providers: [MedecinService],
 })
 export class MedecinModule {}
