@@ -7,9 +7,10 @@ import { CorsMiddleware } from './patients/middleware/cors.middleware';
 import { APP_FILTER ,APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filtres/http-exception.filter'; // Import du middleware
 import { ValidationExceptionFilter } from './common/filtres/validation-exception.filter';
+import { RendezVousModule } from './rendez_vous/rendez_vous.module';
 
 @Module({
-  imports: [MedecinModule],  
+  imports: [MedecinModule, PatientsModule, RendezVousModule],  
   providers: [
     {
       provide: APP_PIPE,

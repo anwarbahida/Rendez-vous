@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany } from 'typeorm';
 import { IsDate, IsEmail , IsNumber, IsString, Length} from 'class-validator';
+import { RendezVous } from '../rendez_vous/rendez_vous.entity';
+
 
 @Entity()
 export class Patient {
@@ -27,4 +29,7 @@ export class Patient {
   @Column({ type: 'date' })
   @IsDate()
   birthDate: string;
+
+  @OneToMany(() => RendezVous, (rendezVous) => rendezVous.patient)
+  rendezVous: RendezVous[];
 }
