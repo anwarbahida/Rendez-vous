@@ -22,39 +22,66 @@ export class AuthService {
 
     private jwtService: JwtService,
   ) {}
-
   async registerPatient(patientDto): Promise<any> {
+    // Vérification si un patient avec cet email existe déjà
+    const existingPatient = await this.patientRepository.findOne({ where: { email: patientDto.email } });
+    if (existingPatient) {
+      throw new Error('Un patient avec cet email existe déjà');
+    }
+  
+    // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(patientDto.password, 10);
+  
+    // Création du patient
     const newPatient = this.patientRepository.create({
       ...patientDto,
       password: hashedPassword,
     });
+  
     await this.patientRepository.save(newPatient);
     return this.createJwtPayload(newPatient);
   }
-
+  
   async registerMedecin(medecinDto): Promise<any> {
+    // Vérification si un médecin avec cet email existe déjà
+    const existingMedecin = await this.medecinRepository.findOne({ where: { email: medecinDto.email } });
+    if (existingMedecin) {
+      throw new Error('Un médecin avec cet email existe déjà');
+    }
+  
+    // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(medecinDto.password, 10);
+  
+    // Création du médecin
     const newMedecin = this.medecinRepository.create({
       ...medecinDto,
       password: hashedPassword,
     });
+  
     await this.medecinRepository.save(newMedecin);
     return this.createJwtPayload(newMedecin);
   }
-
-
+  
   async registerInfirmierDeBureau(InfirmierDeBureauDto): Promise<any> {
+    // Vérification si un infirmier avec cet email existe déjà
+    const existingInfirmier = await this.InfirmierDeBureauRepository.findOne({ where: { email: InfirmierDeBureauDto.email } });
+    if (existingInfirmier) {
+      throw new Error('Un infirmier de bureau avec cet email existe déjà');
+    }
+  
+    // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(InfirmierDeBureauDto.password, 10);
+  
+    // Création de l'infirmier
     const newInfirmierDeBureau = this.InfirmierDeBureauRepository.create({
       ...InfirmierDeBureauDto,
       password: hashedPassword,
     });
+  
     await this.InfirmierDeBureauRepository.save(newInfirmierDeBureau);
     return this.createJwtPayload(newInfirmierDeBureau);
   }
-
-
+  
 
 
   async loginPatient(patientDto): Promise<any> {
