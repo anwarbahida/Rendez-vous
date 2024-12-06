@@ -7,6 +7,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { Patient } from '../patients/patient.entity';  // Modèle Patient
 import { medecin } from '../medecin/medecin.entity';    // Modèle Medecin
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { InfirmierDeBureau } from 'src/infirmier-de-bureau/infirmier-de-bureau.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       secret: process.env.JWT_SECRET|| 'default_secret_key', // Clé secrète pour signer les tokens
       signOptions: { expiresIn: '1h' },  // Temps d'expiration du token
     }),
-    TypeOrmModule.forFeature([Patient, medecin]), // Importation des entités Patient et Medecin
+    TypeOrmModule.forFeature([Patient, medecin,InfirmierDeBureau]), // Importation des entités Patient et Medecin
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

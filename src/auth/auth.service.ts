@@ -3,17 +3,23 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { Patient } from '../patients/patient.entity'; // Assurez-vous d'utiliser le bon modèle
-import { medecin } from '../medecin/medecin.entity'; // Idem pour Medecin
-import { JwtPayload } from './interfaces/jwt-payload.interface';  // Interface du Payload JWT
+import { Patient } from '../patients/patient.entity';
+import { medecin } from '../medecin/medecin.entity'; 
+import { JwtPayload } from './interfaces/jwt-payload.interface';  
+import { InfirmierDeBureau } from 'src/infirmier-de-bureau/infirmier-de-bureau.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
+
     @InjectRepository(medecin)
     private medecinRepository: Repository<medecin>,
+
+    @InjectRepository(InfirmierDeBureau)
+    private InfirmierDeBureauRepository: Repository<InfirmierDeBureau>,
+
     private jwtService: JwtService,
   ) {}
 
@@ -36,6 +42,20 @@ export class AuthService {
     await this.medecinRepository.save(newMedecin);
     return this.createJwtPayload(newMedecin);
   }
+
+
+  async registerInfirmierDeBureau(InfirmierDeBureauDto): Promise<any> {
+    const hashedPassword = await bcrypt.hash(InfirmierDeBureauDto.password, 10);
+    const newInfirmierDeBureau = this.InfirmierDeBureauRepository.create({
+      ...InfirmierDeBureauDto,
+      password: hashedPassword,
+    });
+    await this.InfirmierDeBureauRepository.save(newInfirmierDeBureau);
+    return this.createJwtPayload(newInfirmierDeBureau);
+  }
+
+
+
 
   async loginPatient(patientDto): Promise<any> {
     const patient = await this.patientRepository.findOne({ where: { email: patientDto.email } });
@@ -60,6 +80,19 @@ export class AuthService {
     }
     return this.createJwtPayload(medecin);
   }
+
+  async loginInfirmierDeBureau(InfirmierDeBureauDto): Promise<any> {
+    const InfirmierDeBureau = await this.InfirmierDeBureauRepository.findOne({ where: { email: InfirmierDeBureauDto.email } });
+    if (!InfirmierDeBureau) {
+      throw new Error('InfirmierDeBureau not found');
+    }
+    const validPassword = await bcrypt.compare(InfirmierDeBureauDto.password, InfirmierDeBureau.password);
+    if (!validPassword) {
+      throw new Error('Invalid password');
+    }
+    return this.createJwtPayload(InfirmierDeBureau);
+  }
+
 
   private createJwtPayload(user: any): any {
     const payload: JwtPayload = { email: user.email, sub: user.id };

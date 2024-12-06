@@ -17,6 +17,9 @@ export class InfirmierDeBureau {
   @Column({ nullable: true })
   email?: string;
 
+  @Column()
+  password:String
+
   @Column({ nullable: true })
   address?: string;
 }

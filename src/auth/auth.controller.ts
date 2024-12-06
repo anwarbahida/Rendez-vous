@@ -14,6 +14,10 @@ export class AuthController {
   registerMedecin(@Body() medecinDto) {
     return this.authService.registerMedecin(medecinDto);
   }
+  @Post('register-InfirmierDeBureau')
+  registerInfirmierDeBureau(@Body() InfirmierDeBureauDto) {
+    return this.authService.registerInfirmierDeBureau(InfirmierDeBureauDto);
+  }
 
   @Post('login-patient')
   loginPatient(@Body() patientDto) {
@@ -23,5 +27,10 @@ export class AuthController {
   @Post('login-medecin')
   loginMedecin(@Body() medecinDto) {
     return this.authService.loginMedecin(medecinDto);
+  }
+
+  @Post('login-InfirmierDeBureau')
+  loginInfirmierDeBureau(@Body() InfirmierDeBureauDto) {
+    return this.authService.loginInfirmierDeBureau(InfirmierDeBureauDto);
   }
 }
