@@ -8,23 +8,24 @@ import { APP_FILTER ,APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filtres/http-exception.filter'; // Import du middleware
 import { ValidationExceptionFilter } from './common/filtres/validation-exception.filter';
 import { RendezVousModule } from './rendez_vous/rendez_vous.module';
-
+import { EmailModule } from './email/email.module'; 
+import { AuthModule } from './auth/auth.module';
 @Module({
-  imports: [MedecinModule, PatientsModule, RendezVousModule],  
-  providers: [
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe, // Appliquer la validation globalement
-    },
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter, // Filtrer les exceptions HTTP
-    },
-    {
-      provide: APP_FILTER,
-      useClass: ValidationExceptionFilter, // Filtrer les erreurs de validation
-    },
-  ],
+  imports: [AuthModule,MedecinModule, PatientsModule, RendezVousModule,EmailModule, AuthModule],  
+  // providers: [
+  //   {
+  //     provide: APP_PIPE,
+  //     useClass: ValidationPipe, // Appliquer la validation globalement
+  //   },
+  //   {
+  //     provide: APP_FILTER,
+  //     useClass: HttpExceptionFilter, // Filtrer les exceptions HTTP
+  //   },
+  //   {
+  //     provide: APP_FILTER,
+  //     useClass: ValidationExceptionFilter, // Filtrer les erreurs de validation
+  //   },
+  // ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
