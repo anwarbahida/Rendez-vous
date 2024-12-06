@@ -1,12 +1,12 @@
-import { Controller, Post,Get, Body, Put, Param, UsePipes, ValidationPipe,Delete } from '@nestjs/common';
+import { Controller,UseGuards, Post,Get, Body, Put, Param, UsePipes, ValidationPipe,Delete } from '@nestjs/common';
 import { RendezVousService } from './rendez_vous.service';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
-
+// import { JwtAuthGuard } from '../auth/wt.guard';
 @Controller('rendez-vous')
 export class RendezVousController {
   constructor(private readonly rendezVousService: RendezVousService) {}
-
+  // @UseGuards(JwtAuthGuard) 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() createRendezVousDto: CreateRendezVousDto) {

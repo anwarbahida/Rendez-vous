@@ -29,6 +29,10 @@ export class Patient {
   @Column({ type: 'date' })
   @IsString()
   birthDate: Date;
+  
+  @Column()
+  @IsString()
+  password: string;
 
   @OneToMany(() => RendezVous, (rendezVous) => rendezVous.patient)
   rendezVous: RendezVous[];
