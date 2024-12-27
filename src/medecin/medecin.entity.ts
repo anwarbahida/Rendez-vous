@@ -25,6 +25,9 @@ export class medecin {
   @Column()
   password:String
 
+  @Column({ type: 'blob', nullable: true }) // Utilisation de bytea pour stocker des données binaires
+  diplomaPhoto: Buffer;
+
   @OneToMany(() => RendezVous, (rendezVous) => rendezVous.medecin)
   rendezVous: RendezVous[];
 }

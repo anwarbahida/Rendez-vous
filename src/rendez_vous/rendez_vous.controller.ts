@@ -3,7 +3,7 @@ import { RendezVousService } from './rendez_vous.service';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
 // import { JwtAuthGuard } from '../auth/wt.guard';
-@Controller('rendez-vous')
+@Controller('rendez_vous')
 export class RendezVousController {
   constructor(private readonly rendezVousService: RendezVousService) {}
   // @UseGuards(JwtAuthGuard) 
