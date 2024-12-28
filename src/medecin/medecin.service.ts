@@ -40,13 +40,4 @@ export class MedecinService {
     const medecin = await this.findOne(id);
     await this.medecinRepository.remove(medecin);
   }
-
-  async updateDiplomaPhoto(id: string, diplomaPhoto: Buffer): Promise<medecin> {
-    const medecin = await this.medecinRepository.findOne({ where: { id } });
-    if (!medecin) {
-      throw new Error('Médecin introuvable');
-    }
-    medecin.diplomaPhoto = diplomaPhoto;
-    return this.medecinRepository.save(medecin);
-  }
 }

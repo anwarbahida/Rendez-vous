@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { MedecinService } from './medecin.service';
-import { FileInterceptor } from '@nestjs/platform-express'; 
+import { FileInterceptor } from '@nestjs/platform-express';
 import { medecin } from './medecin.entity';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 import { NotFoundException } from '@nestjs/common';
-import * as multer from 'multer';
+import * as fs from 'fs';
+import * as pathLib from 'path';
+
 
 @Controller('medecin')
 export class MedecinController {
@@ -38,40 +42,102 @@ export class MedecinController {
     return await this.medecinService.remove(id);
   }
 
-  @Post('upload-diploma')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: multer.memoryStorage(), // ou multer.diskStorage() si vous souhaitez stocker sur le disque
-    limits: { fileSize: 10 * 1024 * 1024 }, // Limite de taille de fichier (par exemple 10 MB)
-    fileFilter: (req, file, callback) => {
-      // Filtrage des types de fichiers autorisés (par exemple, seulement les fichiers image)
-      if (!file.mimetype.startsWith('image')) {
-        return callback(new Error('Type de fichier non autorisé'), false);
-      }
-      callback(null, true);
-    },
-  }))
-  async uploadDiploma(
+  // Upload photo functionality
+  @Post(':id/upload-photo')
+  @UseInterceptors(
+    FileInterceptor('photo', {
+      storage: diskStorage({
+        destination: './uploads/photos', // Directory to store photos
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(new Error('Invalid file type'), false);
+        }
+      },
+    }),
+  )
+  async uploadPhoto(
+    @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body('id') id: string,
-  ) {
+  ): Promise<medecin> {
     if (!file) {
-      throw new NotFoundException('Aucun fichier téléchargé');
+      throw new NotFoundException('Photo not uploaded.');
     }
-    return this.medecinService.updateDiplomaPhoto(id, file.buffer);
+    const photoUrl = `/uploads/photos/${file.filename}`;
+    // Update the medecin with the photo URL
+    return await this.medecinService.update(id, { photo: photoUrl });
   }
-  @Get(':id/photo')
-  async getDiplomaPhoto(@Param('id') id: string): Promise<any> {
+
+  // Modify photo functionality
+  @Patch(':id/update-photo')
+  @UseInterceptors(
+    FileInterceptor('photo', {
+      storage: diskStorage({
+        destination: './uploads/photos', // Directory to store photos
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(new Error('Invalid file type'), false);
+        }
+      },
+    }),
+  )
+  async updatePhoto(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<medecin> {
+    if (!file) {
+      throw new NotFoundException('No file uploaded.');
+    }
+
+    // Get the current photo URL from the database
+    const currentMedecin = await this.medecinService.findOne(id);
+
+    if (currentMedecin?.photo) {
+      // If the current photo exists, delete it
+      const currentPhotoPath = pathLib.join(__dirname, '..', 'uploads', 'photos', path.basename(currentMedecin.photo));
+      if (fs.existsSync(currentPhotoPath)) {
+        fs.unlinkSync(currentPhotoPath); // Remove the old photo file
+      }
+    }
+
+    const photoUrl = `/uploads/photos/${file.filename}`;
+
+    // Update the medecin record with the new photo URL
+    return await this.medecinService.update(id, { photo: photoUrl });
+  }
+
+  @Delete(':id/delete-photo')
+  @HttpCode(204)
+  async deletePhoto(@Param('id') id: string): Promise<void> {
     const medecin = await this.medecinService.findOne(id);
-    if (!medecin || !medecin.diplomaPhoto) {
-      throw new NotFoundException('Photo non trouvée');
+    if (!medecin || !medecin.photo) {
+      throw new NotFoundException('No photo found for this Medecin.');
     }
-    
-    return {
-      headers: { 'Content-Type': 'image/jpeg' },
-      body: medecin.diplomaPhoto
-    };
+  
+    const photoPath = pathLib.join(__dirname, '..', 'uploads', 'photos', path.basename(medecin.photo));
+    if (fs.existsSync(photoPath)) {
+      fs.unlinkSync(photoPath);
+    }
+  
+    await this.medecinService.update(id, { photo: null });
   }
-
-
+  
 
 }
