@@ -1,5 +1,4 @@
-
-import { Entity, Column, OneToMany,PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RendezVous } from '../rendez_vous/rendez_vous.entity';
 
 @Entity()
@@ -14,7 +13,6 @@ export class medecin {
   lastName: string;
 
   @Column()
- 
   email: string;
 
   @Column()
@@ -22,8 +20,12 @@ export class medecin {
 
   @Column({ type: 'date' })
   birthDate: string;
+
   @Column()
-  password:String
+  password: string;
+
+  @Column({ nullable: true }) // Champ optionnel
+  photo: string; // URL de la photo
 
   @OneToMany(() => RendezVous, (rendezVous) => rendezVous.medecin)
   rendezVous: RendezVous[];
