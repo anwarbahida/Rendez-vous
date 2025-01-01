@@ -31,4 +31,8 @@ export class CreateRendezVousDto {
   @ValidateNested()
   @Type(() => MedecinDto)
   medecin: MedecinDto;
+
+
+  @IsString()
+  statut: string;
 }

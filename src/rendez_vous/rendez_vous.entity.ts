@@ -21,5 +21,5 @@ export class RendezVous {
     medecin: medecin;
 
     @Column()
-    statut: string; // en attente, confirmé, annulé
+    statut: string ; // en attente, confirmé, annulé
 }

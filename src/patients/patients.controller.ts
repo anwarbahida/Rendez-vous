@@ -10,7 +10,7 @@ export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   @Post()
-  create(@Body() patient: Patient): Promise<Patient> {
+  create(@Body(new ValidationPipe()) patient: Patient): Promise<Patient> {
     return this.patientsService.create(patient);
   }
 

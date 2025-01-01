@@ -4,32 +4,59 @@ import { Repository } from 'typeorm';
 import { RendezVous } from './rendez_vous.entity';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
-import { EmailService } from '../email/email.service'; // Assurez-vous que vous importez le bon service
+import { EmailService } from '../email/email.service'; 
+import { PatientsService } from 'src/patients/patients.service';
+import {MedecinService} from 'src/medecin/medecin.service'; // Import du service MedecinService
+
 
 @Injectable()
 export class RendezVousService {
   constructor(
     @InjectRepository(RendezVous)
     private readonly rendezVousRepository: Repository<RendezVous>, // Nom de la variable corrigé ici
-    private readonly emailService: EmailService, // Injection du service Email
+    private readonly emailService: EmailService, 
+    private readonly patientsService: PatientsService, // Injection du service PatientsService
+    private readonly medecinService: MedecinService,// Injection du service Email
   ) {}
 
   async create(createRendezVousDto: CreateRendezVousDto): Promise<RendezVous> {
     const rendezVous = this.rendezVousRepository.create(createRendezVousDto);
     const savedRendezVous = await this.rendezVousRepository.save(rendezVous);
 
-    // Récupérer les emails du patient et du médecin
-    const patientEmail = savedRendezVous.patient.email;
-    const doctorEmail = savedRendezVous.medecin.email;
+    // Récupération des emails du patient et du médecin
+    const patient = await this.patientsService.findOne(savedRendezVous.patient.id);
+    const medecin = await this.medecinService.findOne(savedRendezVous.medecin.id); 
 
-    const subject = 'Confirmation de votre rendez-vous';
-    const message = `Votre rendez-vous est confirmé pour le ${savedRendezVous.date} à ${savedRendezVous.heure}.`;
+    if (!patient || !medecin) {
+      throw new Error('Patient or Medecin not found');
+    }
 
-    // Envoi des emails
-    await this.emailService.sendEmail(patientEmail, subject, message);
-    await this.emailService.sendEmail(doctorEmail, subject, message);
+    const patientEmail = patient.email;
+    const medecinEmail = medecin.email;
+    const patientname = patient.firstName;
+    const medecinname=medecin.firstName;
+
+
+    console.log(patientEmail);
+    console.log(medecinEmail);
+
+    // Envoi des emails avec les détails du rendez-vous
+    await this.emailService.sendRendezVousConfirmation(patientEmail, medecinEmail, savedRendezVous.date, savedRendezVous.heure,patientname,medecinname);
 
     return savedRendezVous;
+  }
+
+  async findByPatientId(patientId: string): Promise<RendezVous[]> {
+    return await this.rendezVousRepository.find({
+      where: { patient: { id: patientId } },
+      relations: ['patient', 'medecin'],
+    });
+  }
+  async findByMedecinId(medecinId: string): Promise<RendezVous[]> {
+    return await this.rendezVousRepository.find({
+      where: { medecin: { id: medecinId } },
+      relations: ['patient', 'medecin'], // Inclure les relations si nécessaire
+    });
   }
 
   async findAll(): Promise<RendezVous[]> {

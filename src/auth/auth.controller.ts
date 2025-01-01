@@ -9,7 +9,10 @@ export class AuthController {
   registerPatient(@Body() patientDto) {
     return this.authService.registerPatient(patientDto);
   }
-
+  @Post('login-infirmier')
+  async loginInfirmier(@Body() InfirmierDto) {
+    return this.authService.loginInfirmier(InfirmierDto);
+  }
   @Post('register-medecin')
   registerMedecin(@Body() medecinDto) {
     return this.authService.registerMedecin(medecinDto);
@@ -23,5 +26,10 @@ export class AuthController {
   @Post('login-medecin')
   loginMedecin(@Body() medecinDto) {
     return this.authService.loginMedecin(medecinDto);
+  }
+  @Post('register-infirmier')
+  // Appliquer la validation
+  async registerInfirmier(@Body() registerInfirmierDto) {
+    return this.authService.registerInfirmier(registerInfirmierDto);
   }
 }

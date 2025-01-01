@@ -9,5 +9,6 @@ import { databaseConfig } from '../config/database.config';
   imports: [TypeOrmModule.forRoot(databaseConfig), TypeOrmModule.forFeature([medecin])],
   controllers: [MedecinController],
   providers: [MedecinService],
+  exports: [MedecinService],
 })
 export class MedecinModule {}

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { InfirmierDeBureau } from './infirmier-de-bureau.entity';
 import { UpdateInfirmierDto } from './dto/update-infirmier.dto';
 import { CreateInfirmierDto } from './dto/create-infirmier.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class InfirmierDeBureauService {
@@ -12,6 +13,16 @@ export class InfirmierDeBureauService {
         private readonly infirmierRepository: Repository<InfirmierDeBureau>,
       ) {}
     
+    async create(createInfirmierDto: CreateInfirmierDto): Promise<any> {
+        const hashedPassword = await bcrypt.hash(createInfirmierDto.password, 10);
+        const newInfirmier = this.infirmierRepository.create({
+          ...createInfirmierDto,
+          password: hashedPassword,
+         
+        });
+        await this.infirmierRepository.save(newInfirmier);
+        return newInfirmier;
+    }
     async update(id: number, updateInfirmierDto: UpdateInfirmierDto): Promise<InfirmierDeBureau> {
         const infirmier = await this.infirmierRepository.findOne({ where: { id } });
         if (!infirmier) {
@@ -30,14 +41,6 @@ export class InfirmierDeBureauService {
     }
 
     // Créer un nouvel infirmier de bureau
-
-    async create(createInfirmierDto: CreateInfirmierDto): Promise<InfirmierDeBureau> {
-        // Créer une instance de l'entité avec les données du DTO
-        const infirmier = this.infirmierRepository.create(createInfirmierDto);
-        
-        // Sauvegarder l'entité dans la base de données
-        return await this.infirmierRepository.save(infirmier);
-    }
 
     // Récupérer tous les infirmiers de bureau
     async findAll(): Promise<InfirmierDeBureau[]> {

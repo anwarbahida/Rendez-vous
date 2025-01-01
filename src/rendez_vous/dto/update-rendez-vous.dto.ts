@@ -33,4 +33,7 @@ export class UpdateRendezVousDto {
   @ValidateNested()
   @Type(() => MedecinDto)
   medecin?: MedecinDto;
+
+  @IsString()
+  statut: string;
 }

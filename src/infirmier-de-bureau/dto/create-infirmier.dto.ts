@@ -17,4 +17,8 @@ export class CreateInfirmierDto {
 
     @IsString()
     address: string;
+    @IsString()
+    password: string;
+    @IsString()
+    roles: string;
 }

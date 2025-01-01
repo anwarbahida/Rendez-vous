@@ -23,4 +23,10 @@ export class UpdateInfirmierDto {
   @IsString()
   @IsNotEmpty()
   address?: string;
+  @IsOptional()
+  @IsString()
+  password?: string;
+  @IsOptional()
+  @IsString()
+  roles?: string;
 }
