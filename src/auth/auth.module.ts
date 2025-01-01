@@ -7,7 +7,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { Patient } from '../patients/patient.entity';  // Modèle Patient
 import { medecin } from '../medecin/medecin.entity';    // Modèle Medecin
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { InfirmierDeBureau } from 'src/infirmier-de-bureau/infirmier-de-bureau.entity';
+import { InfirmierDeBureau } from '../infirmier-de-bureau/infirmier-de-bureau.entity';
 
 @Module({
   imports: [

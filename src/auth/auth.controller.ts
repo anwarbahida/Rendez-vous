@@ -1,40 +1,30 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ConflictException } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-
   @Post('register-patient')
-  async registerPatient(@Body() patientDto) {
-    try {
-      return await this.authService.registerPatient(patientDto);
-    } catch (error) {
-      if (error.message === 'Un patient avec cet email existe déjà') {
-        throw new ConflictException(error.message);
-      }
-      throw error;
-    }
+  registerPatient(@Body() patientDto) {
+    return this.authService.registerPatient(patientDto);
   }
-  
-  @Post('register-medecin')
-  async registerMedecin(@Body() medecinDto) {
-    try {
-      return await this.authService.registerMedecin(medecinDto);
-    } catch (error) {
-      if (error.message === 'Un médecin avec cet email existe déjà') {
-        throw new ConflictException(error.message);
-      }
-      throw error;
-    }
-  }
-  
-  
   @Post('login-patient')
   loginPatient(@Body() patientDto) {
     return this.authService.loginPatient(patientDto);
+  }
+  @Post('login-infirmier')
+  async loginInfirmier(@Body() InfirmierDto) {
+    return this.authService.loginInfirmier(InfirmierDto);
+  }
+  @Post('register-infirmier')
+  // Appliquer la validation
+  async registerInfirmier(@Body() registerInfirmierDto) {
+    return this.authService.registerInfirmier(registerInfirmierDto);
+  }
+  @Post('register-medecin')
+  registerMedecin(@Body() medecinDto) {
+    return this.authService.registerMedecin(medecinDto);
   }
 
   @Post('login-medecin')
