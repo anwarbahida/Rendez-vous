@@ -62,25 +62,7 @@ export class AuthService {
     return this.createJwtPayload(newMedecin);
   }
   
-  async registerInfirmierDeBureau(InfirmierDeBureauDto): Promise<any> {
-    // Vérification si un infirmier avec cet email existe déjà
-    const existingInfirmier = await this.InfirmierDeBureauRepository.findOne({ where: { email: InfirmierDeBureauDto.email } });
-    if (existingInfirmier) {
-      throw new Error('Un infirmier de bureau avec cet email existe déjà');
-    }
-  
-    // Hachage du mot de passe
-    const hashedPassword = await bcrypt.hash(InfirmierDeBureauDto.password, 10);
-  
-    // Création de l'infirmier
-    const newInfirmierDeBureau = this.InfirmierDeBureauRepository.create({
-      ...InfirmierDeBureauDto,
-      password: hashedPassword,
-    });
-  
-    await this.InfirmierDeBureauRepository.save(newInfirmierDeBureau);
-    return this.createJwtPayload(newInfirmierDeBureau);
-  }
+
   
 
 
@@ -108,17 +90,7 @@ export class AuthService {
     return this.createJwtPayload(medecin);
   }
 
-  async loginInfirmierDeBureau(InfirmierDeBureauDto): Promise<any> {
-    const InfirmierDeBureau = await this.InfirmierDeBureauRepository.findOne({ where: { email: InfirmierDeBureauDto.email } });
-    if (!InfirmierDeBureau) {
-      throw new Error('InfirmierDeBureau not found');
-    }
-    const validPassword = await bcrypt.compare(InfirmierDeBureauDto.password, InfirmierDeBureau.password);
-    if (!validPassword) {
-      throw new Error('Invalid password');
-    }
-    return this.createJwtPayload(InfirmierDeBureau);
-  }
+
 
 
   private createJwtPayload(user: any): any {

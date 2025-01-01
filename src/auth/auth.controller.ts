@@ -31,17 +31,6 @@ export class AuthController {
     }
   }
   
-  @Post('register-InfirmierDeBureau')
-  async registerInfirmierDeBureau(@Body() InfirmierDeBureauDto) {
-    try {
-      return await this.authService.registerInfirmierDeBureau(InfirmierDeBureauDto);
-    } catch (error) {
-      if (error.message === 'Un infirmier de bureau avec cet email existe déjà') {
-        throw new ConflictException(error.message);
-      }
-      throw error;
-    }
-  }
   
   @Post('login-patient')
   loginPatient(@Body() patientDto) {
@@ -53,8 +42,4 @@ export class AuthController {
     return this.authService.loginMedecin(medecinDto);
   }
 
-  @Post('login-InfirmierDeBureau')
-  loginInfirmierDeBureau(@Body() InfirmierDeBureauDto) {
-    return this.authService.loginInfirmierDeBureau(InfirmierDeBureauDto);
-  }
 }
